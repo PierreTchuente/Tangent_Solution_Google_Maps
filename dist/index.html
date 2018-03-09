@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="mainApp" ng-controller="mainController">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="style.css" rel="stylesheet" />
+    <title>Map Search</title>
+</head>
+
+<body>
+    <div>
+        <input type="text" id="inputSeachID" class="search">
+        <div id="mapID">
+
+        </div>
+    </div>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAvb7ksY7JrhTiWQoIjKPblk_lhTsvcR5I&libraries=places&callback=initialiseMap"></script>
+    <script src="bundle.js"></script>
+</body>
+
+</html>
