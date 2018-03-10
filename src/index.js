@@ -3,35 +3,19 @@ import _ from 'angular';
 var mainMod = angular.module('mainApp', []);
 mainMod.controller('mainController', ['$scope', function($scope) {
 
-    var initialiseMap = function() {
+    var initialiseMap = function(userCurrentLatLng) {
 
-        //Default Position.
-        var defaultPosition = {
-            lat: -26.39794,
-            lng: 27.6944
-        };
         var map = new google.maps.Map(document.getElementById('mapID'), {
             zoom: 17,
-            center: defaultPosition
+            center: userCurrentLatLng,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
         });
+
         var marker = new google.maps.Marker({
-            position: defaultPosition,
-            map: map
+            map: map,
+            animation: google.maps.Animation.DROP,
+            position: userCurrentLatLng,
         });
-
-        if (navigator.geolocation) {
-            //Starting from the user current location.
-            navigator.geolocation.getCurrentPosition(function(position) {
-                defaultPosition.lat = position.coords.latitude;
-                defaultPosition.lng = position.coords.longitude;
-
-                console.log(defaultPosition);
-
-                map.setCenter(defaultPosition);
-            });
-        } else {
-            console.log("Browser does not support Geolocation.");
-        }
 
         var inputSeachElem = document.getElementById('inputSeachID');
         var autocomplete = new google.maps.places.Autocomplete(inputSeachElem);
@@ -41,9 +25,10 @@ mainMod.controller('mainController', ['$scope', function($scope) {
             marker.setVisible(false);
             var place = autocomplete.getPlace();
             if (!place.geometry) {
+
                 // if the place has not been sugested.
-                window.alert("No details available for input: '" + place.name + "'");
-                alert("Sorry!! could not find " + place.nane);
+                console.log(place.name);
+                alert("Sorry!! could not find " + place.name);
                 return false;
             }
 
@@ -56,10 +41,24 @@ mainMod.controller('mainController', ['$scope', function($scope) {
                 map.setCenter(place.geometry.location);
                 map.setZoom(17);
             }
-            marker.setPosition(place.geometry.location);
+
             marker.setVisible(true);
+            marker.setAnimation(google.maps.Animation.DROP);
+            marker.setPosition(place.geometry.location);
         });
     }
 
-    initialiseMap(); // initialise the map.
+    if (navigator.geolocation) {
+
+        //Starting from the user current location.
+        navigator.geolocation.getCurrentPosition(function(position) {
+
+            var userCurrentLatLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+            console.log(userCurrentLatLng); // log out the user current coordonate
+            initialiseMap(userCurrentLatLng); // initialise the map.           
+        });
+    } else {
+        console.log("Browser does not support Geolocation.");
+    }
+
 }]);
